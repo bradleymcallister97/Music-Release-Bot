@@ -1,0 +1,13 @@
+# ide
+.vscode
+
+# Node
+node_modules
+package-lock.json
+
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
