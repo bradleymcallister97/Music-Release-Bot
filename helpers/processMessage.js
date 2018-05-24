@@ -1,3 +1,4 @@
+const config = require('../config');
 const rp = require('request-promise');
 const _ = require('lodash');
 
@@ -10,7 +11,7 @@ function getGreeting() {
 function getJoke() {
     return rp({
         method: 'GET',
-        uri: 'https://icanhazdadjoke.com/',
+        uri: config.jokes.url,
         json: true
     }).then((data) => {
         return data.joke;
@@ -21,8 +22,8 @@ function getJoke() {
 
 function sendMessageToUser(userId, message) {
     rp({
-        uri: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: { access_token: process.env.FACEBOOK_ACCESS_TOKEN },
+        uri: config.facebook.url,
+        qs: { access_token: config.facebook.token },
         method: 'POST',
         body: {
             recipient: { id: userId },

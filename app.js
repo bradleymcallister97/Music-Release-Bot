@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('./config');
 
-if (!process.env.FACEBOOK_ACCESS_TOKEN){
+if (!config.facebook.token){
     throw new Error('FACEBOOK_ACCESS_TOKEN not defined');
 }
 
-const port = process.env.PORT || 3000;
+const port = config.port;
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
