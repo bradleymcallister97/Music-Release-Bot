@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+if (!process.env.FACEBOOK_ACCESS_TOKEN){
+    throw new Error('FACEBOOK_ACCESS_TOKEN not defined');
+}
+
 const port = process.env.PORT || 3000;
 const app = express();
 app.use(bodyParser.json());

@@ -11,3 +11,5 @@ package-lock.json
 logs
 *.log
 npm-debug.log*
+
+setup.sh
