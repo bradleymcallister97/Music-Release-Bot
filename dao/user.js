@@ -27,6 +27,12 @@ function removeArtist(userId, artistId) {
     );
 }
 
+function getUsersSubscribedToArtist(artistId) {
+    return User.find({ artists: {  $elemMatch: { spotify_id: artistId } } }).then((users) => {
+        return users.map((u) => u.user_id);
+    });
+}
+
 function getArtist(userId, artistName) {
     return User.findOne({ user_id: userId }).then((user) => {
         if (user) {
@@ -52,5 +58,6 @@ module.exports = {
     addArtist: addArtist,
     removeArtist: removeArtist,
     getArtists: getArtists,
-    getArtist: getArtist
+    getArtist: getArtist,
+    getUsersSubscribedToArtist: getUsersSubscribedToArtist
 };

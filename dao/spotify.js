@@ -43,7 +43,7 @@ function searchAlbums(artistId) {
             if (a.name && a.release_date) {
                 return {
                     name: a.name,
-                    dateReleased: a.release_date
+                    dateReleased: new Date(a.release_date)
                 }
             }
         });
