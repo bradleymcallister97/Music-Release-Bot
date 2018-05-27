@@ -33,12 +33,41 @@ function sendMessageToUser(userId, message) {
     });
 }
 
+function sendButtonsToUser(userId, message, buttonStrs) {
+    var buttons = buttonStrs.map((buttonStr) => {
+        return {
+            title: buttonStr,
+            type: 'postback',
+            payload: 'payload'
+        };
+    });
+    rp({
+        uri: config.facebook.url,
+        qs: { access_token: config.facebook.token },
+        method: 'POST',
+        body: {
+            recipient: { id: userId },
+            message: {
+                attachment: {
+                    type: 'template',
+                    payload: {
+                        template_type: 'button',
+                        text: message,
+                        buttons: buttons
+                    }
+                }
+            }
+        },
+        json: true
+    });
+}
+
 module.exports = (event) => {
     const userId = event.sender.id;
     const nlp = _.get(event, 'message.nlp.entities');
 
     new Promise((resolve, reject) => {
-        if (nlp.greetings && nlp.greetings[0] && nlp.greetings[0].confidence > 0.8){
+        if (nlp.greetings && nlp.greetings[0] && nlp.greetings[0].confidence > 0.8) {
             resolve(getGreeting());
         } else if (nlp.joke) {
             resolve(getJoke());
@@ -46,6 +75,7 @@ module.exports = (event) => {
             resolve('Sorry I do not understand. You can try again with a different wording, or I might not have the feature that you are trying to use.');
         }
     }).then((message) => {
-        sendMessageToUser(userId, message);
+        // sendMessageToUser(userId, message);
+        sendButtonsToUser(userId, 'Choose One', ['First', 'Second', 'Third']);
     });
 }
