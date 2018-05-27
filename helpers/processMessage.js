@@ -1,81 +1,74 @@
 const config = require('../config');
 const rp = require('request-promise');
 const _ = require('lodash');
-
-function getGreeting() {
-    const messages = ['Hello', 'Howdy', 'Good Day', 'Hey', 'Sup', 'Yo'];
-    const i = Math.floor(Math.random() * messages.length);
-    return messages[i];
-}
-
-function getJoke() {
-    return rp({
-        method: 'GET',
-        uri: config.jokes.url,
-        json: true
-    }).then((data) => {
-        return data.joke;
-    }).catch((error) => {
-        return 'Sorry could not get a joke, try again';
-    });
-}
-
-function sendMessageToUser(userId, message) {
-    rp({
-        uri: config.facebook.url,
-        qs: { access_token: config.facebook.token },
-        method: 'POST',
-        body: {
-            recipient: { id: userId },
-            message: { text: message },
-        },
-        json: true
-    });
-}
-
-function sendButtonsToUser(userId, message, buttonStrs) {
-    var buttons = buttonStrs.map((buttonStr) => {
-        return {
-            title: buttonStr,
-            type: 'postback',
-            payload: 'payload'
-        };
-    });
-    rp({
-        uri: config.facebook.url,
-        qs: { access_token: config.facebook.token },
-        method: 'POST',
-        body: {
-            recipient: { id: userId },
-            message: {
-                attachment: {
-                    type: 'template',
-                    payload: {
-                        template_type: 'button',
-                        text: message,
-                        buttons: buttons
-                    }
-                }
-            }
-        },
-        json: true
-    });
-}
+const { sendMessageToUser, sendButtonsToUser } = require('../dao/facebook');
+const { searchArtists } = require('../dao/spotify');
+const { getArtists, getArtist } = require('../dao/user');
 
 module.exports = (event) => {
     const userId = event.sender.id;
     const nlp = _.get(event, 'message.nlp.entities');
 
-    new Promise((resolve, reject) => {
-        if (nlp.greetings && nlp.greetings[0] && nlp.greetings[0].confidence > 0.8) {
-            resolve(getGreeting());
-        } else if (nlp.joke) {
-            resolve(getJoke());
-        } else {
-            resolve('Sorry I do not understand. You can try again with a different wording, or I might not have the feature that you are trying to use.');
-        }
-    }).then((message) => {
-        // sendMessageToUser(userId, message);
-        sendButtonsToUser(userId, 'Choose One', ['First', 'Second', 'Third']);
-    });
+    if (nlp.greetings && nlp.greetings[0] && nlp.greetings[0].confidence > 0.8) {
+        var message = `Hello, I'm Jarvis. I notify you when your favourite artists release a new album. The way that I work is that you tell me an artist and I will give you a list of artists that I can find. Then you will tell me the correct artist, and that's it. Once you have subscribed to an artist, you will get notifications when they release a new album. To subscribe to an artist say "subscribe <artist name>". To unsubscribe to an artist say "unsubscribe <artist name>". To see a list of your artists say "list subscriptions"`
+        sendMessageToUser(userId, message);
+    } else if (event.message.text.startsWith('subscribe')) {
+        const artistQuery = event.message.text.replace('subscribe','').trim();
+        return searchArtists(artistQuery).then((artists) => {
+            var btns = artists.map((a) => {
+                return {
+                    name: a.name,
+                    payload: {
+                        type: 'subscribe',
+                        data: {
+                            artistId: a.id,
+                            artistName: a.name
+                        }
+                    }
+                };
+            });
+            sendButtonsToUser(userId, 'Select the correct artist', btns);
+        }).catch((error) => {
+            sendMessageToUser(userId, 'Sorry there was an error finding your artist, please try again');
+        });
+    } else if (event.message.text.startsWith('unsubscribe')) {
+        const artistName = event.message.text.replace('unsubscribe','').trim();
+        getArtist(userId, artistName).then((artistId) => {
+            if (artistId) {
+                var btns = [
+                    {
+                        name: 'Yes',
+                        payload: {
+                            type: 'unsubscribe',
+                            data: {
+                                artistId: artistId,
+                                artistName: artistName
+                            }
+                        }
+                    },
+                    {
+                        name: 'No',
+                        payload: {}
+                    }
+                ];
+                sendButtonsToUser(userId, 'Are you sure you want to unsubscibe to ' + artistName, btns);
+            } else {
+                sendMessageToUser(userId, 'You are currently not subscibed to the artist ' + artistName + '. To see a list of your artists say "list subscriptions"');
+            }
+        }).catch((error) => {
+            sendMessageToUser(userId, 'Sorry there was an error attempting to unsubscribed, please try again');
+        });
+    } else if (event.message.text.startsWith('list subscriptions')) {
+        getArtists(userId).then((artists) => {
+            if (artists.length === 0) {
+                sendMessageToUser(userId, 'You are currently not subscribed to any artists');
+            } else {
+                sendMessageToUser(userId, 'You are currently subscribed to ' + artists.join(', '));
+            }
+        }).catch((error) => {
+            sendMessageToUser(userId, 'Sorry there was an error getting your subscribed artist, please try again');
+        });
+    } else {
+        sendMessageToUser(userId, `Sorry I cannot understand your message. To subscribe to an artist say "subscribe <artist name>". To unsubscribe to an artist say "unsubscribe <artist name>". To see a list of your artists say "list subscriptions"`);
+    }
 }

@@ -1,4 +1,5 @@
 const processMessage = require('../helpers/processMessage');
+const processPostback = require('../helpers/processPostback');
 
 module.exports = (req, res) => {
     if (req.body.object === 'page') {
@@ -6,6 +7,8 @@ module.exports = (req, res) => {
             entry.messaging.forEach(event => {
                 if (event.message && event.message.text) {
                     processMessage(event);
+                } else if (event.postback){
+                    processPostback(event);
                 }
             });
         });

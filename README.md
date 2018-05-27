@@ -1,10 +1,2 @@
-# Jarvis_bot
-Facebook messenger bot
-
-## To-Do
-- [X] jokes
-- [ ] weather
-- [ ] reminders
-- [ ] send daily summary in morning
-
-__... more to come__
+# Music Release Bot
+Facebook messenger bot that lets you know when your favourite artist relases a new album.
