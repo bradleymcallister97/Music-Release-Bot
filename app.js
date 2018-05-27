@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const config = require('./config');
-const UserModel = require('./models/user');
 
 if (!config.facebook.token || !config.spotify.token){
     throw new Error('Not All Tokens have been initialized');
