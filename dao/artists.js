@@ -19,6 +19,14 @@ function getAllArtitsts() {
     });
 }
 
+function createArtist(artistId, artistName) {
+    return Artist.create({
+        artist_id: artistId,
+        name: artistName
+    });
+}
+
 module.exports = {
-    getAllArtitsts: getAllArtitsts
+    getAllArtitsts: getAllArtitsts,
+    createArtist: createArtist
 };
