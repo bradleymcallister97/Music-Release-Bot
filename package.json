@@ -4,7 +4,8 @@
   "description": "Music Release Bot",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "author": "Bradley McAllister",
   "license": "ISC",
