@@ -1,9 +1,15 @@
 const rp = require('request-promise');
 const _ = require('lodash');
+const querystring = require('querystring');
 const config = require('../config');
 
 function searchArtists(query) {
-    const url = '/search?&type=artist&limit=3&q=' + encodeURIComponent(query);
+    const queryStr = querystring.stringify({
+        type: 'artist',
+        limit: 3,
+        q: query
+    });
+    const url = '/search?' + queryStr;
     return rp({
         uri: config.spotify.url + url,
         headers: {
@@ -29,7 +35,10 @@ function searchArtists(query) {
 }
 
 function searchAlbums(artistId) {
-    const url = '/artists/' + artistId + '/albums?limit=3';
+    const queryStr = querystring.stringify({
+        limit: 3
+    });
+    const url = '/artists/' + artistId + '/albums?' + queryStr;
     return rp({
         uri: config.spotify.url + url,
         headers: {
