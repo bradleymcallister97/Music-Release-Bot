@@ -8,7 +8,9 @@ if (!config.facebook.token || !config.spotify.token) {
     throw new Error('Not All Tokens have been initialized');
 }
 
-mongoose.connect(config.mongo.connectionStr);
+mongoose.connect(config.mongo.connectionStr).catch((error) => {
+    throw new Error('Error connecting to mongo');
+});
 
 const port = config.port;
 const app = express();
