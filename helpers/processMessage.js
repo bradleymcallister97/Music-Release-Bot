@@ -10,7 +10,7 @@ module.exports = (event) => {
     const nlp = _.get(event, 'message.nlp.entities');
 
     if (nlp.greetings && nlp.greetings[0] && nlp.greetings[0].confidence > 0.8) {
-        var message = `Hello, I'm Jarvis. I notify you when your favourite artists release a new album. The way that I work is that you tell me an artist and I will give you a list of artists that I can find. Then you will tell me the correct artist, and that's it. Once you have subscribed to an artist, you will get notifications when they release a new album. To subscribe to an artist say "subscribe <artist name>". To unsubscribe to an artist say "unsubscribe <artist name>". To see a list of your artists say "list subscriptions"`
+        var message = `Hello, I'm a music reminder bot. I notify you when your favourite artists release a new album. The way that I work is that you tell me an artist and I will give you a list of artists that I can find. Then you will tell me the correct artist, and that's it. Once you have subscribed to an artist, you will get notifications when they release a new album. To subscribe to an artist say "subscribe <artist name>". To unsubscribe to an artist say "unsubscribe <artist name>". To see a list of your artists say "list subscriptions"`
         sendMessageToUser(userId, message);
     } else if (event.message.text.startsWith('subscribe')) {
         const artistQuery = event.message.text.replace('subscribe','').trim();
@@ -45,10 +45,6 @@ module.exports = (event) => {
                                 artistName: artistName
                             }
                         }
-                    },
-                    {
-                        name: 'No',
-                        payload: {}
                     }
                 ];
                 sendButtonsToUser(userId, 'Are you sure you want to unsubscibe to ' + artistName, btns);
