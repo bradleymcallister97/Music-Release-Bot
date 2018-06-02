@@ -4,6 +4,7 @@ const querystring = require('querystring');
 const config = require('../config');
 
 function searchArtists(query) {
+    console.log('SPOTIFY: search artist: ' + query);
     const queryStr = querystring.stringify({
         type: 'artist',
         limit: 3,
@@ -35,6 +36,7 @@ function searchArtists(query) {
 }
 
 function searchAlbums(artistId) {
+    console.log('SPOTIFY: search albums ' + artistId);
     const queryStr = querystring.stringify({
         limit: 3
     });

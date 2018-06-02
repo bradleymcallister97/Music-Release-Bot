@@ -5,6 +5,7 @@ const UserModel = require('../models/user');
 const User = mongoose.model('User');
 
 function addArtist(userId, artistName, artistId) {
+    console.log('DB: adding artist: ' + artistId + ' to user: ' + userId);
     return User.findOne({ user_id: userId }).then((user) => {
         if (user) {
             return User.update(
@@ -21,6 +22,7 @@ function addArtist(userId, artistName, artistId) {
 }
 
 function removeArtist(userId, artistId) {
+    console.log('DB: removing artist: ' + artistId + ' from user: ' + userId);
     return User.update(
         { user_id: userId },
         { $pull: { artists: { spotify_id: artistId } } }
@@ -28,12 +30,14 @@ function removeArtist(userId, artistId) {
 }
 
 function getUsersSubscribedToArtist(artistId) {
+    console.log('DB: get user: ' + userId + ' artists');
     return User.find({ artists: {  $elemMatch: { spotify_id: artistId } } }).then((users) => {
         return users.map((u) => u.user_id);
     });
 }
 
 function getArtist(userId, artistName) {
+    console.log('DB: get artist: ' + artistName + ' for user: ' + userId);
     return User.findOne({ user_id: userId }).then((user) => {
         if (user) {
             const foundArtist = _.find(user.artists, (a) => a.name === artistName);
@@ -45,6 +49,7 @@ function getArtist(userId, artistName) {
 }
 
 function getArtists(userId) {
+    console.log('DB: get artist for user: ' + userId);
     return User.findOne({ user_id: userId }).then((user) => {
         if (user) {
             return user.artists.map((a) => a.name);

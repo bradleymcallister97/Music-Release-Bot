@@ -2,6 +2,7 @@ const config = require('../config');
 const rp = require('request-promise');
 
 function sendMessageToUser(userId, message) {
+    console.log('FB: send message to user: ' + userId);
     rp({
         uri: config.facebook.url,
         qs: { access_token: config.facebook.token },
@@ -15,6 +16,7 @@ function sendMessageToUser(userId, message) {
 }
 
 function sendButtonsToUser(userId, message, btns) {
+    console.log('FB: send button message to user: ' + userId);
     var buttons = btns.map((btn) => {
         return {
             title: btn.name,

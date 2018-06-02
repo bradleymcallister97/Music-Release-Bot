@@ -6,6 +6,7 @@ const { sendMessageToUser } = require('../dao/facebook');
 function messageUsersForArtist(artistId, artistName, albumName) {
     getUsersSubscribedToArtist(artistId).then((userIds) => {
         userIds.forEach((id) => {
+            console.log('Sending ' + id + ' message that ' + artistName + ' released ' + albumName);
             sendMessageToUser(id, artistName + ' has released a new album called ' + albumName);
         });
     });
@@ -22,6 +23,7 @@ module.exports = () => {
             searchAlbums(artist.id).then((albums) => {
                 albums.forEach((a) => {
                     if (a.dateReleased.getTime() === today) {
+                        console.log(artist.id + ' released ' + a.name + ' on ' + new Date());
                         messageUsersForArtist(artist.id, artist.name, a.name);
                     }
                 });
