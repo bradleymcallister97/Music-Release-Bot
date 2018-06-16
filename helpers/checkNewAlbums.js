@@ -15,15 +15,14 @@ function messageUsersForArtist(artistId, artistName, albumName) {
 module.exports = () => {
     var today = new Date();
     // Set time to midnight of today
-    today.setHours(0,0,0,0);
-    today = today.getTime();
+    today.setUTCHours(0,0,0,0);
 
     getAllArtitsts().then((artists) => {
         artists.forEach((artist) => {
             searchAlbums(artist.id).then((albums) => {
                 albums.forEach((a) => {
-                    if (a.dateReleased.getTime() === today) {
-                        console.log(artist.id + ' released ' + a.name + ' on ' + new Date());
+                    if (a.dateReleased.getTime() === today.getTime()) {
+                        console.log(artist.id + ' released ' + a.name + ' on ' + today);
                         messageUsersForArtist(artist.id, artist.name, a.name);
                     }
                 });

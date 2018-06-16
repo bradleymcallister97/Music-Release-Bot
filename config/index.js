@@ -1,3 +1,5 @@
+const spotifyToken = Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64');
+
 module.exports = {
     port: process.env.PORT || 3000,
     facebook: {
@@ -6,7 +8,9 @@ module.exports = {
     },
     spotify: {
         url: 'https://api.spotify.com/v1',
-        token: process.env.SPOTIFY_TOKEN
+        tokenUrl: 'https://accounts.spotify.com/api/token',
+        token: spotifyToken,
+        refreshToken: process.env.SPOTIFY_REFRESH_TOKEN
     },
     mongo: {
         connectionStr: process.env.MONGO_CONN_STR || 'mongodb://localhost:27017/mydb'

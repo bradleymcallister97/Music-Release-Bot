@@ -3,6 +3,8 @@ const _ = require('lodash');
 const querystring = require('querystring');
 const config = require('../config');
 
+var access_token = 'asdfadsf';
+
 function searchArtists(query) {
     console.log('SPOTIFY: search artist: ' + query);
     const queryStr = querystring.stringify({
@@ -14,7 +16,7 @@ function searchArtists(query) {
     return rp({
         uri: config.spotify.url + url,
         headers: {
-            Authorization: 'Bearer ' + config.spotify.token
+            Authorization: 'Bearer ' + access_token
         },
         method: 'GET',
         json: true
@@ -30,7 +32,7 @@ function searchArtists(query) {
         });
     }).catch((error) => {
         if (error.statusCode === 401) {
-            console.error('Spotify token expired');
+            return refreshToken().then(() => { return searchArtists(query); });
         }
     });
 }
@@ -44,7 +46,7 @@ function searchAlbums(artistId) {
     return rp({
         uri: config.spotify.url + url,
         headers: {
-            Authorization: 'Bearer ' + config.spotify.token
+            Authorization: 'Bearer ' + access_token
         },
         method: 'GET',
         json: true
@@ -60,8 +62,33 @@ function searchAlbums(artistId) {
         });
     }).catch((error) => {
         if (error.statusCode === 401) {
-            console.error('Spotify token expired');
+            return refreshToken().then(() => { return searchAlbums(artistId); });
         }
+    });
+}
+
+function refreshToken() {
+    console.log('Spotify token expired, so refreshing token');
+    return rp({
+        method: 'POST',
+        uri: config.spotify.tokenUrl,
+        headers: {
+            Authorization: 'Basic ' + config.spotify.token,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: config.spotify.refreshToken
+        },
+        json: true
+    }).then((response) => {
+        console.log('Successfully refreshed Spotify token');
+        access_token = response.access_token;
+        return true;
+    }).catch((error) => {
+        console.error('Error refreshing spotify token');
+        console.error(JSON.stringify(error));
+        throw new Error('Error refreshing spotify token');
     });
 }
 
