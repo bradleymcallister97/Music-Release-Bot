@@ -30,7 +30,7 @@ function removeArtist(userId, artistId) {
 }
 
 function getUsersSubscribedToArtist(artistId) {
-    console.log('DB: get user: ' + userId + ' artists');
+    console.log('DB: get users subscribed to artist:' + artistId);
     return User.find({ artists: {  $elemMatch: { spotify_id: artistId } } }).then((users) => {
         return users.map((u) => u.user_id);
     });

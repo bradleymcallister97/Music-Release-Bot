@@ -68,19 +68,21 @@ function searchAlbums(artistId) {
 }
 
 function refreshToken() {
+    console.log('Spotify token expired, so refreshing token');
     return rp({
         method: 'POST',
         uri: config.spotify.tokenUrl,
         headers: {
-            Authorization: 'Bearer ' + config.spotify.token,
-            'content-type': 'application/x-www-form-urlencoded'
+            Authorization: 'Basic ' + config.spotify.token,
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        formData: {
+        form: {
             grant_type: 'refresh_token',
             refresh_token: config.spotify.refreshToken
         },
         json: true
     }).then((response) => {
+        console.log('Successfully refreshed Spotify token');
         access_token = response.access_token;
         return true;
     }).catch((error) => {
