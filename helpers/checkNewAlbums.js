@@ -14,6 +14,7 @@ function messageUsersForArtist(artistId, artistName, albumName) {
 
 module.exports = () => {
     var today = new Date();
+    console.log('Running job on ' + today);
     // Set time to midnight of today
     today.setUTCHours(0,0,0,0);
 
