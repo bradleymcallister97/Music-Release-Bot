@@ -21,13 +21,13 @@ const run = () => {
 
     return getAllArtitsts().then((artists) => {
         const promises = [];
-        for (artist in artists) {
+        for (const artist of artists) {
             promises.push( 
-                searchAlbums(artist.artist_id).then((albums) => {
-                    for (a in albums) {
+                searchAlbums(artist.id).then((albums) => {
+                    for (const a of albums) {
                         if (a.dateReleased.getTime() === today.getTime()) {
-                            console.log(artist.artist_id + ' released ' + a.name + ' on ' + today);
-                            return messageUsersForArtist(artist.artist_id, artist.name, a.name);
+                            console.log(artist.id + ' released ' + a.name + ' on ' + today);
+                            return messageUsersForArtist(artist.id, artist.name, a.name);
                         }
                     };
                 })
