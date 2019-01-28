@@ -12,13 +12,13 @@ function messageUsersForArtist(artistId, artistName, albumName) {
     });
 }
 
-module.exports = () => {
+const run = () => {
     var today = new Date();
     console.log('Running job on ' + today);
     // Set time to midnight of today
     today.setUTCHours(0,0,0,0);
 
-    getAllArtitsts().then((artists) => {
+    return getAllArtitsts().then((artists) => {
         artists.forEach((artist) => {
             searchAlbums(artist.id).then((albums) => {
                 albums.forEach((a) => {
@@ -31,3 +31,9 @@ module.exports = () => {
         });
     });
 }
+
+run().then(() => {
+    console.log('Done!');
+}).catch((err) => {
+    console.log('Error: ', err);
+})

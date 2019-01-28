@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "logs": "heroku logs --tail -a music-reminder-bot"
+    "logs": "heroku logs --tail -a music-reminder-bot",
+    "run_check_new_releases": "node ./helpers/checkNewAlbums"
   },
   "author": "Bradley McAllister",
   "license": "ISC",
@@ -15,7 +16,6 @@
     "express": "^4.16.3",
     "lodash": "^4.17.10",
     "mongoose": "^5.1.2",
-    "node-cron": "^1.2.1",
     "querystring": "^0.2.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
