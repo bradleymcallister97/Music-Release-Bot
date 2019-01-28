@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-const UserModel = require('../models/user');
 const User = mongoose.model('User');
 
 function addArtist(userId, artistName, artistId) {

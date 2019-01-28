@@ -1,3 +1,4 @@
+require('./setupDB.js');
 const { getAllArtitsts } = require('../dao/artists');
 const { searchAlbums } = require('../dao/spotify');
 const { getUsersSubscribedToArtist } = require('../dao/user');

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-const ArtistModel = require('../models/artist');
 const Artist = mongoose.model('Artist');
 
 function getAllArtitsts() {
